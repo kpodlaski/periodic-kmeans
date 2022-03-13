@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import math
-
-=======
->>>>>>> d16d1be4af1a31cb03200ee917188d8dda8dbe7b
 import numpy as np
 
 class PeriodicMeasure:
@@ -10,7 +6,6 @@ class PeriodicMeasure:
         self.period = period
 
     def distance(self, a, b):
-<<<<<<< HEAD
         d = math.sqrt((a-b)*(a-b))
         return min (d, self.period - d)
 
@@ -30,7 +25,7 @@ class PeriodicMeasure:
         #     _mean = _points.mean(axis=0)
         # else:
         #     _mean = points.mean(axis=0)
-=======
+
         d = abs (a-b)
         return min (d, self.period - d)
 
@@ -41,7 +36,6 @@ class PeriodicMeasure:
             _mean = _points.mean(axis=0)
         else:
             _mean = points.mean(axis=0)
->>>>>>> d16d1be4af1a31cb03200ee917188d8dda8dbe7b
         if _mean > self.period:
             return _mean - self.period
         else:

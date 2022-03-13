@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import json
-
-=======
->>>>>>> d16d1be4af1a31cb03200ee917188d8dda8dbe7b
 import pandas as pd
 
 from pyclustering.cluster.center_initializer import kmeans_plusplus_initializer
@@ -56,17 +52,12 @@ plt.savefig("../_data/out/hist_a.png", format="png")
 ##km = kmeans(times, initial_centers)
 ##Periodic
 km = PeriodicKMeans(times, period=7, no_of_clusters=no_of_clusters)
-<<<<<<< HEAD
 
-
-
-=======
->>>>>>> d16d1be4af1a31cb03200ee917188d8dda8dbe7b
 km.process()
 clusters = km.get_clusters()
 centers = km.get_centers()
 print("classical:",centers)
-<<<<<<< HEAD
+
 print("centers:",centers)
 
 result = {"clusters":clusters, "centers":centers}
@@ -79,10 +70,8 @@ fig = plt.figure()
 for cl in clusters:
     _cluster_data = km.periodic_shift(times[cl])
     plt.hist(_cluster_data, bins=bins_per_cluster)
-=======
 fig = plt.figure()
 for cl in clusters:
     plt.hist(times[cl], bins=bins_per_cluster)
->>>>>>> d16d1be4af1a31cb03200ee917188d8dda8dbe7b
 plt.show()
 plt.savefig("../_data/out/hist_b.png", format="png")
