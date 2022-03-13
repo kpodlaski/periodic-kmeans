@@ -1,0 +1,22 @@
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+
+## pycharm and python environment files
+venv/*
+.init/
+.init/*
+_venv
+__venv
+.idea/
+.idea/*
+__pycache__/
+__pycache__/*
+
+## data files
+data/
+data/*
+/_data/*
+*.png
+*.pptx
+_data/
+
