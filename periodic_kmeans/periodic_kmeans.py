@@ -41,6 +41,7 @@ class PeriodicKMeans(kmeans):
         _centers = initial_centers
         if _centers == None:
             _centers = initial_centers = kmeans_plusplus_initializer(data, no_of_clusters).initialize()
+        print(_centers)
         super().__init__(data, _centers, metric=self.metric)
         self._kmeans__update_centers = types.MethodType(_periodic_update_centers, self)
 
@@ -51,6 +52,9 @@ class PeriodicKMeans(kmeans):
         for c in range(len(clusters)):
             clust_data.append(np.array(self.data[clusters[c]]))
         return clust_data, self.get_total_wce(), self.get_centers()
+
+    def periodic_shift(self, data):
+        return self.measure.periodic_shift(data)
 
 
 
