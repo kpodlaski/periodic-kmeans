@@ -88,41 +88,44 @@ def periodic_shift_by_angle(points, period, shift):
 #tweets_from_json_to_csv()
 #tweets_time_to_float()
 
-data_type = TweetsDataTypes.WEEKLY
+for data_type in [TweetsDataTypes.WEEKLY, TweetsDataTypes.DAYLY]:
 
-params = params_settings[data_type]
+    params = params_settings[data_type]
 
-####DO THE JOB
-bins_per_cluster = 20
-no_of_clusters = params['no_of_clusers']
-##Initial data
-times = read_dataset(data_type)
+    ####DO THE JOB
+    bins_per_cluster = 20
+    no_of_clusters = params['no_of_clusers']
+    ##Initial data
+    times = read_dataset(data_type)
 
-#times = np.random.choice(times.reshape(-1),int(len(times)/12)).reshape(-1,1)
-# print(times, max(times), min(times), times.shape)
+    #times = np.random.choice(times.reshape(-1),int(len(times)/12)).reshape(-1,1)
+    # print(times, max(times), min(times), times.shape)
 
-draw_histogram(times, bins_per_cluster*no_of_clusters, save_to_file="hist_a_{0}.png".format(params['file_postfix']))
+    draw_histogram(times, bins_per_cluster*no_of_clusters, save_to_file="hist_a_{0}.png".format(params['file_postfix']))
 
-#print(times)
-##Classical
+    for method in ['periodic', 'standard']:
+        #print(times)
+        ##Classical
 
-no_of_clusters = 7
-initial_centers = kmeans_plusplus_initializer(times, no_of_clusters).initialize()
-km = kmeans(times, initial_centers)
-##Periodic
-##km = PeriodicKMeans(times, period=params['period'], no_of_clusters=no_of_clusters)
+        no_of_clusters = 7
+        initial_centers = kmeans_plusplus_initializer(times, no_of_clusters).initialize()
+        if method == 'periodic':
+            ##Periodic
+            km = PeriodicKMeans(times, period=params['period'], no_of_clusters=no_of_clusters)
+        if method == 'standard':
+            km = kmeans(times, initial_centers)
 
-km.process()
-clusters = km.get_clusters()
-centers = km.get_centers()
-wccs = km.get_total_wce()
-print(wccs)
-print("centers:", centers)
+        km.process()
+        clusters = km.get_clusters()
+        centers = km.get_centers()
+        wccs = km.get_total_wce()
+        print(wccs)
+        print("centers:", centers)
 
-result = {"clusters": clusters, "centers": centers, "wccs": wccs}
-with open('../_data/out/tweets/clust_periodic_{0}.json'.format(params['file_postfix']), 'w') as outfile:
-    json.dump(result, outfile)
-fig = plt.figure()
+        result = {"clusters": clusters, "centers": centers, "wccs": wccs}
+        with open('../_data/out/tweets/clust_periodic_{0}{1}.json'.format(params['file_postfix'], method), 'w') as outfile:
+            json.dump(result, outfile)
+        fig = plt.figure()
 
-draw_histogram(times, bins_per_cluster, clusters=clusters, kmeans=km, periodic=False, save_to_file="hist_b_{0}.png".format(params['file_postfix']))
+        draw_histogram(times, bins_per_cluster, clusters=clusters, kmeans=km, periodic=False, save_to_file="hist_b_{0}_{1}.png".format(params['file_postfix'],method))
 
