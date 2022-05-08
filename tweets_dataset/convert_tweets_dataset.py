@@ -52,7 +52,7 @@ def read_dataset(type, sample = None):
     if type == TweetsDataTypes.WEEKLY:
         return data[['weektime']].values
 
-def draw_histogram(data, bins, clusters = None, kmeans=None, periodic = False, save_to_file=None):
+def draw_histogram(data, bins, clusters = None, kmeans=None, periodic = False, save_to_file=None, xlabel=None):
     fig = plt.figure()
     if clusters == None:
         clusters = [1]
@@ -63,7 +63,10 @@ def draw_histogram(data, bins, clusters = None, kmeans=None, periodic = False, s
                 _cluster_data = km.periodic_shift(data[cl])
             else:
                 _cluster_data = data[cl]
-        plt.hist(_cluster_data, bins=bins)
+        plt.hist(_cluster_data, bins=bins, alpha=.5, edgecolor='black')
+        if xlabel is not None:
+            plt.xlabel(xlabel)
+        plt.ylabel("count")
     if save_to_file is not None:
         plt.savefig("../_data/out/"+save_to_file)
     plt.show()
@@ -72,11 +75,13 @@ params_settings ={ TweetsDataTypes.WEEKLY :{
                                             'period': 7,
                                             'no_of_clusers': 7,
                                             'file_postfix': 'week',
+                                            'xlabel': 'time [days]'
                                            },
                     TweetsDataTypes.DAYLY :{
                                             'period': 24,
                                             'no_of_clusers': 2,
                                             'file_postfix': 'day',
+                                            'xlabel':'time [hours]'
                                            },
         }
 
@@ -96,12 +101,12 @@ for data_type in [TweetsDataTypes.WEEKLY, TweetsDataTypes.DAYLY]:
     bins_per_cluster = 20
     no_of_clusters = params['no_of_clusers']
     ##Initial data
-    times = read_dataset(data_type)
+    times = read_dataset(data_type, sample=.1)
 
     #times = np.random.choice(times.reshape(-1),int(len(times)/12)).reshape(-1,1)
     # print(times, max(times), min(times), times.shape)
 
-    draw_histogram(times, bins_per_cluster*no_of_clusters, save_to_file="hist_a_{0}.png".format(params['file_postfix']))
+    draw_histogram(times, bins_per_cluster*no_of_clusters,  save_to_file="hist_a_{0}.png".format(params['file_postfix']), xlabel=params['xlabel'])
 
     for method in ['periodic', 'standard']:
         #print(times)
@@ -127,5 +132,5 @@ for data_type in [TweetsDataTypes.WEEKLY, TweetsDataTypes.DAYLY]:
             json.dump(result, outfile)
         fig = plt.figure()
 
-        draw_histogram(times, bins_per_cluster, clusters=clusters, kmeans=km, periodic=False, save_to_file="hist_b_{0}_{1}.png".format(params['file_postfix'],method))
+        draw_histogram(times, bins_per_cluster, clusters=clusters, alpha=.5, edgecolor='black', kmeans=km, periodic=False, save_to_file="hist_b_{0}_{1}.png".format(params['file_postfix'],method), xlabel=xlabel=params['xlabel'])
 

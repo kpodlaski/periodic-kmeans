@@ -11,7 +11,7 @@ from cluster_quality.measures import compare_clusters
 from measures.measures import euclidean1D, angle1D
 from periodic_kmeans.periodic_kmeans import periodic_kmeans
 
-squared_distance = lambda a,b : euclidean1D(a,b) #**2
+squared_distance = lambda a,b : euclidean1D(a,b) **2
 angle_squared_distance = lambda a, b: angle1D(a,b) **2
 
 def k_means_clustering(data, n_clusters, metric=None):
@@ -46,17 +46,29 @@ def shift_dataset(dataset, shift):
 
 data_set = 'modal_gauss'
 n_clusters = 4
+cluster_color_orders_periodic = {'base': [0, 1, 2, 3], '90':[1, 2, 3, 0], '280':[3, 0, 1, 2]}
+cluster_color_orders_original = {'base': [0, 1, 2, 3], '90':[1, 2, 3, 0], '280':[0, 1, 2, 3]}
 
 data_df = pd.read_csv("../_data/in/{0}.csv".format(data_set), sep=";", index_col=0);
+bins = np.linspace(0, 360, 100)
+
+
 clusters = {}
 for column in data_df.columns:
     data = np.array(data_df[column])
     data = data.reshape(-1, 1)
+    # Data histogram
+    fig = plt.plot()
+    plt.hist(data, bins=bins, alpha=.5, edgecolor='black')
+    plt.xlabel("angle [deg.]")
+    plt.ylabel("count")
+    plt.savefig("../_data/out/4modal_gaus_{0}.png.png".format(column), format="png")
+    plt.show()
+    # Data hist plotted
 
     colors = ['blue','red','violet','yellow','green','orange']
     fig, ax = plt.subplots(2)
     #fig.suptitle("Angular modal distribution {1}, classical and circular kmeans, k={0}".format(n_clusters, column))
-    bins = np.linspace(0, 360, 100)
 
     #CIRCULAR Clustering
     #print("Circular clustering")
@@ -70,16 +82,14 @@ for column in data_df.columns:
         #     #y = [0 for x in clust_data[c]]
         #     y = [0.02,.48]
         #     ax.plot([x,x], y, color=colors[c%len(colors)])
-        subset = clust_data[c]
-        ax[0].hist(subset, bins=bins, alpha=0.5, label=f"Cluster {c}")
+        subset = clust_data[cluster_color_orders_periodic[column][c]]
+        ax[1].hist(subset, bins=bins, alpha=0.5, label=f"Cluster {c}", edgecolor='black')
     y = [10 for x in centers]
     #ax[0].scatter(centers, y, s=15)
     for c in centers:
-        ax[0].annotate('', xy= (c[0], 0), xytext=(c[0], -1), arrowprops=dict(color='black',  arrowstyle="-|>"))
+        ax[1].annotate('', xy= (c[0], 0), xytext=(c[0], -1), arrowprops=dict(color='black',  arrowstyle="-|>"))
         #ax[0].annotate('', xy=(c[0], 0), xytext=(c[0], 1), arrowprops=dict(color='red', arrowstyle="-|>"))
-    ax[0].set_title("Periodic k-means")
-    for ticklabel in ax[0].xaxis.get_ticklabels():
-        ticklabel.set_visible(False)
+    ax[1].set_title("Periodic k-means")
 
 
     wccs = 0
@@ -97,17 +107,23 @@ for column in data_df.columns:
         #     #y = [0 for x in clust_data[c]]
         #     y = [0.52,.98]
         #     ax.plot([x,x], y, color=colors[c%len(colors)])
-        subset = clust_data[c]
-        ax[1].hist(subset, bins=bins, alpha=0.5, label=f"Cluster {c}")
+        subset = clust_data[cluster_color_orders_original[column][c]]
+        ax[0].hist(subset, bins=bins, alpha=0.5, label=f"Cluster {c}", edgecolor='black')
         y = [10 for x in centers]
     #ax[1].scatter(centers, y, s=15)
     for c in centers:
-        ax[1].annotate('', xy= (c[0], 0), xytext=(c[0], -1), arrowprops=dict(color='black',  arrowstyle="-|>"))
+        ax[0].annotate('', xy= (c[0], 0), xytext=(c[0], -1), arrowprops=dict(color='black',  arrowstyle="-|>"))
         #ax[1].annotate('', xy=(c[0], 0), xytext=(c[0], 1), arrowprops=dict(color='red', arrowstyle="-|>"))
     #ax.legend()
     # fig.suptitle("Angular modal distribution {1}, classical and circular kmeans, k={0}".format(n_clusters, column))
-    ax[1].set_title("Original k-means")
-    plt.savefig("../_data/out/modal_clustr_ang-{0}.png".format(column), format="png")
+    ax[0].set_title("Original k-means")
+
+    for ticklabel in ax[0].xaxis.get_ticklabels():
+        ticklabel.set_visible(False)
+    plt.xlabel("angle [deg.]")
+    ax[0].set_ylabel("count")
+    ax[1].set_ylabel("count")
+    plt.savefig("../_data/out/clusters{0}.png".format(column), format="png")
     plt.show()
 
 

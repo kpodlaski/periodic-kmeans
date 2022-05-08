@@ -8,8 +8,8 @@ from pyclustering.utils.metric import type_metric, distance_metric
 from measures.measures import euclidean1D, angle1D
 from periodic_kmeans.periodic_kmeans import periodic_kmeans, PeriodicKMeans
 
-squared_distance = lambda a,b : euclidean1D(a,b) #**2
-angle_squared_distance = lambda a, b: angle1D(a,b) #**2
+squared_distance = lambda a,b : euclidean1D(a,b) **2
+angle_squared_distance = lambda a, b: angle1D(a,b) **2
 
 
 def k_means_clustering(data, n_clusters, metric=None):
@@ -47,8 +47,9 @@ data = np.array(data_df[data_set])
 data = data.reshape(-1, 1)
 
 colors = ['blue','red','violet','yellow','green','orange']
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(2)
 n_clusters = 3
+bins = np.linspace(0, 360, 36)
 #CIRCULAR Clustering
 print("Circular clustering")
 ###Non objective way
@@ -58,16 +59,15 @@ print("Circular clustering")
 kmeans2 = PeriodicKMeans(data, period=360, no_of_clusters=n_clusters)
 clust_data, wccs_circ, centers = kmeans2.clustering()
 
+clust_order= [1, 0, 2]
+
 print("other:",kmeans2.get_centers())
-
-
 for c in range(len(clust_data)):
-    for x in clust_data[c]:
-        #y = [0 for x in clust_data[c]]
-        y = [0.02,.48]
-        ax.plot([x,x], y, color=colors[c%len(colors)])
-y = [0 for x in centers]
-ax.scatter(centers, y, s=15)
+    subset = clust_data[clust_order[c]]
+    ax[1].hist(subset, bins=bins, alpha=0.5, label=f"Cluster {c}", edgecolor='black')
+for c in centers:
+    ax[1].annotate('', xy= (c[0], 0), xytext=(c[0], -1), arrowprops=dict(color='black',  arrowstyle="-|>"))
+ax[1].set_title("Periodic k-means")
 
 wccs = 0
 for c in range(len(clust_data)):
@@ -81,14 +81,19 @@ print("Euclidean clustering")
 #metric = distance_metric(type_metric.USER_DEFINED, func=squared_distance)
 clust_data, wccs_euc, centers = k_means_clustering(data, n_clusters)
 for c in range(len(clust_data)):
-    for x in clust_data[c]:
-        #y = [0 for x in clust_data[c]]
-        y = [0.52,.98]
-        ax.plot([x,x], y, color=colors[c%len(colors)])
-    y = [1 for x in centers]
-ax.scatter(centers, y, s=15)
+    subset = clust_data[c]
+    ax[0].hist(subset, bins=bins, alpha=0.5, label=f"Cluster {c}", edgecolor='black')
+for c in centers:
+    ax[0].annotate('', xy= (c[0], 0), xytext=(c[0], -1), arrowprops=dict(color='black',  arrowstyle="-|>"))
+ax[0].set_title("Original k-means")
 
-plt.title("Wind directory, classical and circular kmeans, k={0}".format(n_clusters))
+for ticklabel in ax[0].xaxis.get_ticklabels():
+    ticklabel.set_visible(False)
+plt.xlabel("angle [deg.]")
+ax[0].set_ylabel("count")
+ax[1].set_ylabel("count")
+#plt.title("Wind directory, classical and circular kmeans, k={0}".format(n_clusters))
+plt.savefig("../_data/out/wdir.png", format="png")
 plt.show()
 print("WCCSratio:",wccs_circ/wccs_euc)
 
