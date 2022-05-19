@@ -126,6 +126,8 @@ for column in data_df.columns:
     plt.savefig("../_data/out/clusters{0}.png".format(column), format="png")
     plt.show()
 
+    print("{1}&standard&{0}\\".format(wccs_circ,column))
+    print("{1}&periodic&{0}\\".format(wccs_euc,column))
 
     print("WCCSratio:",wccs_circ/wccs_euc, " for angle ",column)
     clusters[column] = {'basic':labels_basic, 'circ':labels_circ, 'wccs_euc':wccs_euc, 'wccs_circ':wccs_circ, 'wccs_ratio':wccs_circ/wccs_euc}

@@ -132,5 +132,8 @@ for data_type in [TweetsDataTypes.WEEKLY, TweetsDataTypes.DAYLY]:
             json.dump(result, outfile)
         fig = plt.figure()
 
-        draw_histogram(times, bins_per_cluster, clusters=clusters, alpha=.5, edgecolor='black', kmeans=km, periodic=False, save_to_file="hist_b_{0}_{1}.png".format(params['file_postfix'],method), xlabel=xlabel=params['xlabel'])
+        draw_histogram(times, bins_per_cluster, clusters=clusters, alpha=.5,
+                       edgecolor='black', kmeans=km, periodic=False,
+                       save_to_file="hist_b_{0}_{1}.png".format(params['file_postfix'],method)
+                       , xlabel=params['xlabel'])
 

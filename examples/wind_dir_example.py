@@ -46,9 +46,19 @@ data_df = pd.read_csv("../_data/in/{0}.csv".format(data_set));
 data = np.array(data_df[data_set])
 data = data.reshape(-1, 1)
 
+fig = plt.plot()
+bins = np.linspace(0, 360, 36)
+plt.hist(data_df,bins, alpha=0.5, edgecolor='black')
+plt.xlabel("angle [deg.]")
+plt.ylabel("count")
+#plt.title("Wind directory, classical and circular kmeans, k={0}".format(n_clusters))
+plt.savefig("../_data/out/wdir_dist.png", format="png")
+plt.show()
+
+
 colors = ['blue','red','violet','yellow','green','orange']
 fig, ax = plt.subplots(2)
-n_clusters = 3
+n_clusters = 2
 bins = np.linspace(0, 360, 36)
 #CIRCULAR Clustering
 print("Circular clustering")
@@ -93,9 +103,16 @@ plt.xlabel("angle [deg.]")
 ax[0].set_ylabel("count")
 ax[1].set_ylabel("count")
 #plt.title("Wind directory, classical and circular kmeans, k={0}".format(n_clusters))
-plt.savefig("../_data/out/wdir.png", format="png")
+plt.savefig("../_data/out/wdir_{0}.png".format(n_clusters), format="png")
 plt.show()
 print("WCCSratio:",wccs_circ/wccs_euc)
+
+print(clust_data)
+
+#results.to_csv("../_data/out/modal_clustr_results.csv", sep = ";")
+#results.to_csv("../_data/out/modal_clustr_results.tex", sep = "&", float_format="%.3f", index=False)
+
+
 
 # # Other Eucliedan clustering
 # kmeans = KMeans(n_clusters=2)
