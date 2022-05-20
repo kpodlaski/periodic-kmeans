@@ -39,7 +39,7 @@ def shift_dataset(dataset, shift):
     new_data_set = [ x if x>shift else 360+x for x in dataset.reshape(-1)]
     return np.array(new_data_set).reshape(-1, 1)
 
-
+outdir = "../_data/out/test/"
 data_set = 'wdir'
 
 data_df = pd.read_csv("../_data/in/{0}.csv".format(data_set));
@@ -52,7 +52,7 @@ plt.hist(data_df,bins, alpha=0.5, edgecolor='black')
 plt.xlabel("angle [deg.]")
 plt.ylabel("count")
 #plt.title("Wind directory, classical and circular kmeans, k={0}".format(n_clusters))
-plt.savefig("../_data/out/wdir_dist.png", format="png")
+plt.savefig(outdir+"wdir_dist.png", format="png")
 plt.show()
 
 
@@ -103,7 +103,7 @@ plt.xlabel("angle [deg.]")
 ax[0].set_ylabel("count")
 ax[1].set_ylabel("count")
 #plt.title("Wind directory, classical and circular kmeans, k={0}".format(n_clusters))
-plt.savefig("../_data/out/wdir_{0}.png".format(n_clusters), format="png")
+plt.savefig(outdir+"wdir_{0}.png".format(n_clusters), format="png")
 plt.show()
 print("WCCSratio:",wccs_circ/wccs_euc)
 

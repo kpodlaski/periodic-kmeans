@@ -17,26 +17,6 @@ class PeriodicMeasure:
         # metric should be distance ^2
         d = math.sqrt((a - b) * (a - b))
         return (min(d, self.period - d))**2
-        # distance
-        # return (min(d, self.period2 - d))
-
-    # return (min(d, self.period2 - d))
-
-    def periodic_shift(self,points):
-        if max(points) - min(points) > self.period/2:
-            _points = np.array([0 if x > self.period/2 else self.period for x in points]).reshape(-1, 1)
-            _points = points + _points
-            return _points
-        else:
-            return points
-
-    def periodic_mean_not_good_one(self,points):
-        shift = np.count_nonzero(points < self.half_period)
-        _mean =  points.mean(axis=0) + shift * self.period / len(points)
-        if _mean > self.period:
-            return _mean - self.period
-        else:
-            return _mean
 
     def periodic_mean(self,points):
         _n = len(points)
@@ -50,7 +30,6 @@ class PeriodicMeasure:
         else :
             return points.mean(axis=0)
 
-
     def perodic_two_points_mean(self, pointL, pointR, wL=1, wR =1):
         if pointR<pointL :
             return self.perodic_two_points_mean(pointR,pointL,wR, wL)
@@ -59,44 +38,3 @@ class PeriodicMeasure:
             _mean += wL*self.period/(wL+wR)
             _mean = _mean % self.period
         return _mean
-
-    def periodic_mean_lr(self, points):
-        mask = np.array([0 if x > self.period / 2 else 1 for x in points]).reshape(-1, 1)
-        left_count = mask.sum()
-        left_set = points * mask
-        right_count = len(points)-left_count
-        right_set = points * (1 - mask)
-        left_mean = left_set.mean(axis=0)
-        right_mean = right_set.mean(axis=0)
-        mean = (left_count*left_mean+right_count*right_mean)/len(points)
-        if abs(left_mean-right_mean)>self.period/2:
-            mean += left_count*self.period/len(points)
-            if mean > self.period:
-                mean = mean-self.period
-        return mean
-
-    def periodic_mean_old(self,points):
-        _mean = self.periodic_shift(points).mean(axis=0)
-        # if max(points) - min(points) > self.period/2:
-        #     _points = np.array([0 if x > self.period/2 else self.period for x in points]).reshape(-1, 1)
-        #     _points = points + _points
-        #     _mean = _points.mean(axis=0)
-        # else:
-        #     _mean = points.mean(axis=0)
-        return _mean
-        #if _mean > self.period:
-        #    return _mean - self.period
-        #else:
-        #    return _mean
-
-    def periodic_mean_old(self,points):
-        if max(points) - min(points) > self.period/2:
-            _points = np.array([0 if x > self.period/2 else self.period for x in points]).reshape(-1, 1)
-            _points = points + _points
-            _mean = _points.mean(axis=0)
-        else:
-            _mean = points.mean(axis=0)
-        if _mean > self.period:
-            return _mean - self.period
-        else:
-            return _mean

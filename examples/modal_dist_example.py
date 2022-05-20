@@ -9,7 +9,7 @@ from pyclustering.utils.metric import type_metric, distance_metric
 
 from cluster_quality.measures import compare_clusters
 from measures.measures import euclidean1D, angle1D
-from periodic_kmeans.periodic_kmeans import periodic_kmeans
+from periodic_kmeans.periodic_kmeans import periodic_kmeans, PeriodicKMeans
 
 squared_distance = lambda a,b : euclidean1D(a,b) **2
 angle_squared_distance = lambda a, b: angle1D(a,b) **2
@@ -24,7 +24,7 @@ def k_means_clustering(data, n_clusters, metric=None):
     if metric == None:
         kmeans_instance = kmeans(data, start_centers)
     else:
-        kmeans_instance = periodic_kmeans(data, start_centers, metric=metric)
+        kmeans_instance = PeriodicKMeans(data, period=360, no_of_clusters=len(start_centers))
     kmeans_instance.process()
 
 
@@ -43,7 +43,7 @@ def shift_dataset(dataset, shift):
     new_data_set = [ x if x>shift else 360+x for x in dataset.reshape(-1)]
     return np.array(new_data_set).reshape(-1, 1)
 
-
+outdir = "../_data/out"
 data_set = 'modal_gauss'
 n_clusters = 4
 cluster_color_orders_periodic = {'base': [0, 1, 2, 3], '90':[1, 2, 3, 0], '280':[3, 0, 1, 2]}
@@ -62,7 +62,7 @@ for column in data_df.columns:
     plt.hist(data, bins=bins, alpha=.5, edgecolor='black')
     plt.xlabel("angle [deg.]")
     plt.ylabel("count")
-    plt.savefig("../_data/out/4modal_gaus_{0}.png.png".format(column), format="png")
+    plt.savefig(outdir+"4modal_gaus_{0}.png.png".format(column), format="png")
     plt.show()
     # Data hist plotted
 
@@ -123,7 +123,7 @@ for column in data_df.columns:
     plt.xlabel("angle [deg.]")
     ax[0].set_ylabel("count")
     ax[1].set_ylabel("count")
-    plt.savefig("../_data/out/clusters{0}.png".format(column), format="png")
+    plt.savefig(outdir+"clusters{0}.png".format(column), format="png")
     plt.show()
 
     print("{1}&standard&{0}\\".format(wccs_circ,column))
@@ -150,8 +150,8 @@ for id_col in range(len(data_df.columns)):
                 _pd = pd.DataFrame([_res])
                 results = pd.concat([results, _pd], ignore_index=True)
 #print(results)
-results.to_csv("../_data/out/modal_clustr_results.csv", sep = ";")
-results.to_csv("../_data/out/modal_clustr_results.tex", sep = "&", float_format="%.3f", index=False)
+results.to_csv(outdir+"modal_clustr_results.csv", sep = ";")
+results.to_csv(outdir+"modal_clustr_results.tex", sep = "&", float_format="%.3f", index=False)
 
 
 

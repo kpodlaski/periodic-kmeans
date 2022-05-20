@@ -44,6 +44,7 @@ xlabels = {'day_time':'time of the day',
             'week_time':'day of the week'}
 
 basedir = "../_data/in/nyc_taxi/"
+outdir = "../_data/out/"
 datafile = "test_norm_data.csv"
 
 data_df = pd.read_csv(basedir+datafile)
@@ -54,7 +55,7 @@ params = [
     {'dataset':'month_time', 'period':1, 'scale':False, 'n_clusters':[4,5,7,12]},
 ]
 
-fout = open("../_data/out/taxi_results.tex", "w")
+fout = open(outdir+"taxi_results.tex", "w")
 for par in params:
     for n_clusters in par['n_clusters']:
         data_set = par['dataset']
@@ -114,7 +115,7 @@ for par in params:
         plt.xlabel(xlabels[data_set])
         ax[0].set_ylabel("count")
         ax[1].set_ylabel("count")
-        plt.savefig("../_data/out/taxi_{1}_{0}.png".format(n_clusters,data_set), format="png")
+        plt.savefig(outdir+"taxi_{1}_{0}.png".format(n_clusters,data_set), format="png")
         plt.show()
 
         fout.write("%dataset-{0},\nperiodic&{1}&{2}\n".format(data_set,n_clusters,wccs_circ))

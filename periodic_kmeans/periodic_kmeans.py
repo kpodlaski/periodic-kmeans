@@ -37,6 +37,7 @@ def _periodic_update_centers(self):
     return np.array(centers)
 
 def periodic_kmeans(data, initial_centers, metric):
+
     kmeans_instance =  kmeans(data, initial_centers, metric=metric)
     kmeans_instance._kmeans__update_centers = types.MethodType(_periodic_update_centers,kmeans_instance)
     return kmeans_instance
