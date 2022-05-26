@@ -26,8 +26,6 @@ def k_means_clustering(data, n_clusters, metric=None):
     else:
         kmeans_instance = PeriodicKMeans(data, period=360, no_of_clusters=len(start_centers))
     kmeans_instance.process()
-
-
     clusters = kmeans_instance.get_clusters()
     clust_data = []
     labels = np.empty(len(data))
@@ -62,18 +60,20 @@ for column in data_df.columns:
     plt.hist(data, bins=bins, alpha=.5, edgecolor='black')
     plt.xlabel("angle [deg.]")
     plt.ylabel("count")
-    plt.savefig(outdir+"4modal_gaus_{0}.png.png".format(column), format="png")
+    plt.savefig(outdir+"4modal_gaus_{0}.png".format(column), format="png")
     plt.show()
     # Data hist plotted
 
     colors = ['blue','red','violet','yellow','green','orange']
-    fig, ax = plt.subplots(2)
+    fig, ax = plt.subplots(2, figsize=(6.4,6.4))
     #fig.suptitle("Angular modal distribution {1}, classical and circular kmeans, k={0}".format(n_clusters, column))
 
     #CIRCULAR Clustering
     #print("Circular clustering")
+    kmeans2 = PeriodicKMeans(data, period=360, no_of_clusters=n_clusters)
+    clust_data, wccs_circ, centers = kmeans2.clustering()
     metric = distance_metric(type_metric.USER_DEFINED, func=angle_squared_distance)
-    clust_data, labels_circ, wccs_circ, centers, k_means = k_means_clustering(data, n_clusters, metric)
+    #clust_data, labels_circ, wccs_circ, centers, k_means = k_means_clustering(data, n_clusters, metric)
     #print(column,k_means.get_clusters())
     centers = np.array(centers)%360
 
@@ -130,7 +130,7 @@ for column in data_df.columns:
     print("{1}&periodic&{0}\\".format(wccs_euc,column))
 
     print("WCCSratio:",wccs_circ/wccs_euc, " for angle ",column)
-    clusters[column] = {'basic':labels_basic, 'circ':labels_circ, 'wccs_euc':wccs_euc, 'wccs_circ':wccs_circ, 'wccs_ratio':wccs_circ/wccs_euc}
+    #clusters[column] = {'basic':labels_basic, 'circ':labels_circ, 'wccs_euc':wccs_euc, 'wccs_circ':wccs_circ, 'wccs_ratio':wccs_circ/wccs_euc}
     #print(column)
     #print(compare_clusters(labels_basic,labels_circ))
 

@@ -40,8 +40,8 @@ def shift_dataset(dataset, period):
     return np.array(new_data_set).reshape(-1, 1)
 
 xlabels = {'day_time':'time of the day',
-            'month_time':'day of the month',
-            'week_time':'day of the week'}
+            'month_time':'time of the month',
+            'week_time':'time of the week'}
 
 basedir = "../_data/in/nyc_taxi/"
 outdir = "../_data/out/"
@@ -50,9 +50,9 @@ datafile = "test_norm_data.csv"
 data_df = pd.read_csv(basedir+datafile)
 
 params = [
-    {'dataset':'day_time', 'period':24, 'scale':True, 'n_clusters':[4,5,7,12]},
-    {'dataset':'week_time', 'period':7, 'scale':False, 'n_clusters':[3,4,5,7]},
-    {'dataset':'month_time', 'period':1, 'scale':False, 'n_clusters':[4,5,7,12]},
+    {'dataset':'day_time', 'period':24, 'scale':True, 'n_clusters':[4,7,12]},
+    {'dataset':'week_time', 'period':7, 'scale':False, 'n_clusters':[3,5,7]},
+    #{'dataset':'month_time', 'period':1, 'scale':False, 'n_clusters':[4,5,7,12]},
 ]
 
 fout = open(outdir+"taxi_results.tex", "w")
@@ -73,7 +73,7 @@ for par in params:
         plt.show()
 
         colors = ['blue','red','violet','yellow','green','orange']
-        fig, ax = plt.subplots(2)
+        fig, ax = plt.subplots(2, figsize=(6.4,6.4))
         print("Clistering, dataset:{0}, n_clusters:{1}, period:{2}".format(data_set, n_clusters,period))
         #CIRCULAR Clustering
         print("Circular clustering")

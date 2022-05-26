@@ -57,8 +57,8 @@ plt.show()
 
 
 colors = ['blue','red','violet','yellow','green','orange']
-fig, ax = plt.subplots(2)
-n_clusters = 2
+fig, ax = plt.subplots(2, figsize=(6.4,6.4))
+n_clusters = 3
 bins = np.linspace(0, 360, 36)
 #CIRCULAR Clustering
 print("Circular clustering")
