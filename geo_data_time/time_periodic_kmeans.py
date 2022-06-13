@@ -1,14 +1,42 @@
+import bisect
+import datetime
+from enum import Enum
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from pyclustering.cluster.kmeans import kmeans
-from measures.measures import euclidean1D, angle1D, week1D, unitperiod1D, hour1D
-from periodic_kmeans.periodic_kmeans import periodic_kmeans, PeriodicKMeans
+from periodic_kmeans.periodic_kmeans import PeriodicKMeans
 
-squared_distance = lambda a,b : euclidean1D(a,b) **2
-week_squared_distance = lambda a, b: week1D(a,b) **2
-unit_period_squared_distance = lambda a, b: unitperiod1D(a,b) **2
-hour_squared_distance = lambda a, b: hour1D(a,b) **2
+
+class GeoDataQuality(Enum):
+    HQ = 0
+    MQ = 1
+    LQ = 2
+
+
+def _read_fco(file_name, shuffle=False, data_quality=GeoDataQuality.LQ):
+    df = pd.read_csv(file_name, sep=';')
+    if shuffle :
+        df = df.sample(frac=1)
+    df = df[df['fco2_raw'].notna()]
+    if data_quality == GeoDataQuality.HQ:
+        df = df[df['fco2_HQ'].notna()]
+    if data_quality == GeoDataQuality.MQ:
+        df = df[df['fco2_MQ'].notna()]
+    df = df.drop(['class'], axis=1)
+    return df
+
+base_path = "../_data/in/geo/"
+outdir = "../_data/out/geo/"
+
+def read_fco_all(filename = base_path+'d_fco2_all.csv',shuffle=False, division=None):
+    return _read_fco(filename,shuffle=shuffle, data_quality = GeoDataQuality.LQ)
+
+def read_fco_mq(filename = base_path+'d_fco2_all.csv', shuffle=False, division=None):
+    return _read_fco(filename,shuffle=shuffle, data_quality = GeoDataQuality.MQ)
+
+def read_fco2_hq(filename= base_path+'d_fco2_hq.csv', shuffle=False, division=None):
+    return _read_fco(filename, shuffle=shuffle, data_quality = GeoDataQuality.HQ)
 
 def k_means_clustering(data, n_clusters, period=None, metric=None):
     if period is None:
@@ -22,7 +50,7 @@ def k_means_clustering(data, n_clusters, period=None, metric=None):
     if metric == None:
         kmeans_instance = kmeans(data, start_centers)
     else:
-        kmeans_instance = periodic_kmeans(data, start_centers, metric=metric)
+        raise (Exception("Huston we have a problem"))
     kmeans_instance.process()
 
 
@@ -35,32 +63,23 @@ def k_means_clustering(data, n_clusters, period=None, metric=None):
     print(kmeans_instance.get_total_wce())
     return clust_data, kmeans_instance.get_total_wce(), kmeans_instance.get_centers()
 
-def shift_dataset(dataset, period):
-    new_data_set = [ x if x>period/2 else period+x for x in dataset.reshape(-1)]
-    return np.array(new_data_set).reshape(-1, 1)
 
-xlabels = {'day_time':'time of the day',
-            'month_time':'time of the month',
-            'week_time':'time of the week'}
 
-basedir = "../_data/in/nyc_taxi/"
-outdir = "../_data/out/"
-datatype = 'test'#'train'
-datafile = "{0}_norm_data.csv".format(datatype)
+data_df = read_fco2_hq()
 
-data_df = pd.read_csv(basedir+datafile)
+data_df['yday'] = data_df.apply(lambda x: datetime.datetime(int(x['rok']),int(x['ms']),int(x['dz'])).timetuple().tm_yday, axis=1)
+
+fout = open(outdir+"geo_results.tex", "w")
+
+xlabels = {'yday':'day of the year',
+           'godz':'time of a day'}
 
 params = [
-    #{'dataset':'day_time', 'period':24, 'scale':True, 'n_clusters':[4,7,12]},
-    {'dataset':'week_time', 'period':7, 'scale':False, 'n_clusters':[3,5,7]},
-    #{'dataset':'month_time', 'period':1, 'scale':False, 'n_clusters':[4,5,7,12]},
+    {'dataset':'yday', 'period':365, 'scale':False, 'n_clusters':[4]},
+    {'dataset':'godz', 'period':24, 'scale':False, 'n_clusters':[4]},
 ]
 
-print(data_df['pickup'].min(), data_df['pickup'].max())
-print(len(data_df))
-exit(1)
 
-fout = open(outdir+"taxi_{0}_results.tex".format(datatype), "w")
 for par in params:
     for n_clusters in par['n_clusters']:
         data_set = par['dataset']
@@ -120,7 +139,7 @@ for par in params:
         plt.xlabel(xlabels[data_set])
         ax[0].set_ylabel("count")
         ax[1].set_ylabel("count")
-        plt.savefig(outdir+"taxi_{2}_{1}_{0}.png".format(n_clusters,data_set,datatype), format="png")
+        plt.savefig(outdir+"taxi_{1}_{0}.png".format(n_clusters,data_set), format="png")
         plt.show()
 
         fout.write("%dataset-{0},\nperiodic&{1}&{2}\n".format(data_set,n_clusters,wccs_circ))
@@ -128,5 +147,3 @@ for par in params:
         fout.write("%dataset-{0}, n_clusters-{1}, wccs_ratio:{2}\n".format(data_set, n_clusters, wccs_circ/wccs_euc))
         fout.flush()
 fout.close()
-
-

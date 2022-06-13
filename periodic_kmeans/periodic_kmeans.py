@@ -50,10 +50,10 @@ class PeriodicKMeans(kmeans):
         self.period = period
         self.measure = PeriodicMeasure(period)
         self.metric = distance_metric(type_metric.USER_DEFINED, func=self.measure.distance)
-        _centers = initial_centers
-        if _centers == None:
-            _centers = initial_centers = kmeans_plusplus_initializer(data, no_of_clusters).initialize()
-        print(_centers)
+        if initial_centers is None:
+            _centers = kmeans_plusplus_initializer(data, no_of_clusters).initialize()
+        else:
+            _centers = initial_centers
         super().__init__(data, _centers, metric=self.metric)
         self._kmeans__update_centers = types.MethodType(_periodic_update_centers, self)
 

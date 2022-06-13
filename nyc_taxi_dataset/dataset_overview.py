@@ -15,6 +15,7 @@ def normalize_month_time(month, month_time):
 
 basedir = "../_data/in/nyc_taxi/"
 datafile = "test.csv"
+datafile = "train.csv"
 
 data_df = pd.read_csv(basedir+datafile);
 
@@ -48,5 +49,5 @@ plt.show()
 plt.hist(time_data['month_time'],bins=300)
 plt.title('Month time')
 plt.show()
-time_data.to_csv(basedir+'test_norm_data.csv')
+time_data.to_csv(basedir+'train_norm_data.csv')
 
