@@ -1,0 +1,11 @@
+@article{periodic_kmeans2022,
+  author = {Alicja, Miniak-G{\'{o}}recka and Krzysztof, Podlaski and Tomasz Gwizda{\l}{\l}a},
+  journal = {Symmetry},
+  volume = {14},
+  number = {6},
+  article-number= {1237},
+  year = {2022},
+  doi = {10.3390/sym14061237},
+  title = {Using k-means clustering in python with periodic boundary conditions},
+  year = {2022}
+}
