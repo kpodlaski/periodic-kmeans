@@ -1,5 +1,5 @@
-from data_genarator.distribution import Flat_distribution, Exp_distribution, Log_distribution, Triangle_distribution
-from data_genarator.multi_modal_gauss import generate_points_from_distribution, save_as_csv, save_as_png, dist_as_png
+from utils.data_genarator.distribution import Flat_distribution, Exp_distribution, Log_distribution, Triangle_distribution
+from utils.data_genarator.multi_modal_gauss import generate_points_from_distribution, save_as_csv, save_as_png, dist_as_png
 
 N= 1000
 

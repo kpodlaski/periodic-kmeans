@@ -26,8 +26,8 @@ def _read_fco(file_name, shuffle=False, data_quality=GeoDataQuality.LQ):
     df = df.drop(['class'], axis=1)
     return df
 
-base_path = "../_data/in/geo/"
-outdir = "../_data/out/geo/"
+base_path = "../../_data/in/geo/"
+outdir = "../../_data/out/geo/"
 
 def read_fco_all(filename = base_path+'d_fco2_all.csv',shuffle=False, division=None):
     return _read_fco(filename,shuffle=shuffle, data_quality = GeoDataQuality.LQ)

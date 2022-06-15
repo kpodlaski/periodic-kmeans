@@ -1,11 +1,9 @@
-import math
 from random import random
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from data_genarator.distribution import Multi_Gauss_distribution, Triangle_distribution, Log_distribution, \
-    Exp_distribution, Flat_distribution
+from utils.data_genarator.distribution import Multi_Gauss_distribution
 
 
 def generate_points_from_distribution(no_of_points, dist, x_min, x_max, y_max):
@@ -32,7 +30,7 @@ def save_as_png(points, x_min, x_max, name):
         bins.append(actual)
         actual += bin_width
     plt.hist(points, bins=bins, label='hist')
-    plt.savefig("../_data/out/distributions/"+name+'.png')
+    plt.savefig("../../_data/out/distributions/"+name+'.png')
 
 def dist_as_png(fun, x_min, x_max, period, shift, name):
     print(name, x_min, x_max)
@@ -46,7 +44,7 @@ def dist_as_png(fun, x_min, x_max, period, shift, name):
     scale_factor = period/max
     x= (scale_factor*x + shift)%period
     plt.plot(x, y)
-    plt.savefig("../_data/out/distributions/dist_"+name+'.png')
+    plt.savefig("../../_data/out/distributions/dist_"+name+'.png')
 
 def dist_as_png(dist, x_min, x_max, period, shift, name):
     print(name, x_min, x_max)
@@ -63,12 +61,12 @@ def dist_as_png(dist, x_min, x_max, period, shift, name):
     scale_factor = period/x_max
     x = (x*scale_factor+shift)%period
     plt.plot(x, y)
-    plt.savefig("../_data/out/distributions/dist_pdf_"+name+'.png')
+    plt.savefig("../../_data/out/distributions/dist_pdf_"+name+'.png')
 
 
 def save_as_csv(points, name):
     dF = pd.DataFrame(points);
-    dF.to_csv("../_data/out/distributions/"+name+'.csv', sep=";", header=False, index=False)
+    dF.to_csv("../../_data/out/distributions/"+name+'.csv', sep=";", header=False, index=False)
 
 def generate_uniform_gauss_parameters(modals, factor, min_mean, max_mean, sigma):
     factors = []
@@ -119,7 +117,7 @@ def generate_multi_modal_gauss():
     #data['base'] = _p
     _p = save_distribution("modal_gaus", number_of_modals, points, dist, min=0, max=50, period=360, shift=280)
     data['280'] = _p
-    data.to_csv("../_data/out/distributions/modal_gauss.csv", sep=';')
+    data.to_csv("../../_data/out/distributions/modal_gauss.csv", sep=';')
     print('done')
 
 

@@ -13,7 +13,7 @@ def convertDate(d):
 def normalize_month_time(month, month_time):
     return month_time/days_in_month[month]
 
-basedir = "../_data/in/nyc_taxi/"
+basedir = "../../_data/in/nyc_taxi/"
 datafile = "test.csv"
 datafile = "train.csv"
 
